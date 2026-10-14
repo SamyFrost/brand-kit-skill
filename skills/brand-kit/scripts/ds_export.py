@@ -753,12 +753,12 @@ def components(d, pattern_uri):
               f'<div style="font-size:24px;opacity:.75">{e(role)}</div><div style="font-size:22px;margin-top:24px;line-height:1.5">'
               f'{e(email)}<br>{e(web)}</div></div></div>')
     card_b = (f'<div style="position:absolute;inset:0;background-color:var(--primary);{pat_bg};display:grid;place-items:center">'
-              f'<div style="background:#fff;padding:44px 56px;border-radius:var(--radius-md);height:84px;box-sizing:content-box" class="lg">{full}</div></div>')
+              f'<div style="background:#fff;padding:44px 56px;border-radius:var(--radius-md);width:62%;box-sizing:border-box" class="lgw">{full}</div></div>')
     sig = (f'<div style="position:absolute;inset:0;background:#fff;color:#111;display:flex;gap:24px;align-items:center;padding:24px 28px">'
            f'<div style="height:64px;color:var(--primary)" class="lg">{mmark}</div><div style="border-left:2px solid var(--accent);padding-left:20px">'
            f'<div class="disp" style="font-size:20px">{e(person)}</div><div style="font-size:13px;opacity:.75">{e(role)} · {e(name)}</div>'
            f'<div style="font-size:13px;margin-top:8px">{e(email)}</div></div></div>')
-    css = FRAME_CSS + ".lg svg{height:100%;width:auto;display:block}"
+    css = FRAME_CSS + ".lg svg{height:100%;width:auto;display:block}.lgw svg{width:100%;height:auto;display:block}"
     out["Stationery"] = (marker("Print", 330, "business card front/back, email signature") + doc("Stationery", css,
         '<div class="row"><div>' + scaled(1050, 600, 0.3, "", card_f) + '<div class="cap">Card front</div></div><div>'
         + scaled(1050, 600, 0.3, "", card_b) + '<div class="cap">Card back</div></div><div>'

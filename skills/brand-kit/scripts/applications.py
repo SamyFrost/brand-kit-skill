@@ -386,15 +386,15 @@ def merch_pages(c, P):
       <div style="position:absolute;left:790px;top:300px;width:170px;height:300px;border:44px solid {gl['bg']};border-left:0;border-radius:0 150px 150px 0;
         box-shadow:0 20px 40px rgba(0,0,0,.12)"></div>
       <div style="position:absolute;left:300px;top:180px;width:520px;height:600px;display:grid;place-items:center;{gvars(gl)}">
-        <div class="mark" style="height:220px">{c.mark(gl['btn'])}</div></div>
+        <div class="mark" style="height:220px">{c.mark_accented(gl['btn'], gl['bg'])}</div></div>
       <span class="mocklabel">mock-up</span>""", style=gvars(gp)))
     out.append(page("cap", "merch", 1200, 900, f"""
       <svg viewBox="0 0 1000 1000" style="position:absolute;left:100px;top:-40px;width:1000px;height:1000px">
         <path d="{CAP}" fill="{gp['bg']}"/><path d="{CAP_B}" fill="{gp['bg']}" opacity=".85"/></svg>
       <div style="position:absolute;left:0;right:0;top:330px;display:grid;place-items:center">
-        <div class="mark" style="height:150px">{c.mark(gp['ink'])}</div></div>
+        <div class="mark" style="height:150px">{c.mark_accented(gp['ink'], gp['bg'])}</div></div>
       <span class="mocklabel">mock-up</span>""", style=gvars(gl)))
-    stickers = [(gp, c.mark(gp["ink"]), "50%"), (gl, c.logo("light"), "var(--r-lg)"), (c.g["accent"], c.mark(c.g["accent"]["ink"]), "50%"),
+    stickers = [(gp, c.mark_accented(gp["ink"], gp["bg"]), "50%"), (gl, c.logo("light"), "var(--r-lg)"), (c.g["accent"], c.mark(c.g["accent"]["ink"]), "50%"),
                 (gd, c.logo("dark"), "var(--r-lg)")]
     st = "".join(f'<div style="background:{g["bg"]};border-radius:{r};display:grid;place-items:center;padding:56px;'
                  f'box-shadow:0 0 0 14px #ffffff, 0 18px 36px rgba(0,0,0,.18)"><div class="logo" style="height:120px;max-width:300px">{m}</div></div>'
