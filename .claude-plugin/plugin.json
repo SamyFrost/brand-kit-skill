@@ -20,5 +20,8 @@
     "merchandise",
     "design-tokens"
   ],
-  "displayName": "Brand Kit"
+  "displayName": "Brand Kit",
+  "homepage": "https://github.com/SamyFrost/brand-kit-skill",
+  "repository": "https://github.com/SamyFrost/brand-kit-skill",
+  "supportUrl": "https://github.com/SamyFrost/brand-kit-skill/issues"
 }

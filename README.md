@@ -38,7 +38,7 @@ left out, never invented; sample contact data and mock-ups are labelled on the i
 
 **Claude Code (plugin):**
 ```
-/plugin marketplace add <owner>/<this-repo>
+/plugin marketplace add SamyFrost/brand-kit-skill
 /plugin install brand-kit
 ```
 or copy `skills/brand-kit/` to `~/.claude/skills/brand-kit/`.
