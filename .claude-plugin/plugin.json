@@ -1,0 +1,24 @@
+{
+  "name": "brand-kit",
+  "description": "A senior brand designer for Claude: creative platform, logo, type, colour, spacing, radius, shadows, motion, pattern, imagery and AI prompts built from one brief, measured, applied to social, video, stationery and merch, and delivered as a claude.ai Design System artifact plus guidelines PDF, logo files and tokens.",
+  "version": "1.0.0",
+  "author": {
+    "name": "brand-kit contributors"
+  },
+  "license": "MIT",
+  "keywords": [
+    "brand",
+    "brand-kit",
+    "identity",
+    "logo",
+    "typography",
+    "color",
+    "design-system",
+    "brand-guidelines",
+    "motion",
+    "social-media",
+    "merchandise",
+    "design-tokens"
+  ],
+  "displayName": "Brand Kit"
+}

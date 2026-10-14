@@ -1,0 +1,20 @@
+{
+  "name": "brand-kit-skill",
+  "owner": {
+    "name": "brand-kit contributors"
+  },
+  "metadata": {
+    "description": "A complete brand-kit skill for Claude: identity, system, applications and a Design System artifact.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "brand-kit",
+      "source": "./",
+      "description": "Creative platform, logo, type, colour, spacing, radius, shadows, motion, pattern, imagery and AI prompts from one brief; applied to social, video, stationery and merch; delivered as a claude.ai Design System artifact plus guidelines PDF, logo files and tokens.",
+      "version": "1.0.0",
+      "category": "design",
+      "keywords": ["brand", "brand-kit", "identity", "logo", "design-system", "brand-guidelines"]
+    }
+  ]
+}
