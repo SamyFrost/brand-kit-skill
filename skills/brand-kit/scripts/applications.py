@@ -328,7 +328,7 @@ def stationery_pages(c, P):
       </div>""", style=gvars(gp)))
     out.append(page("email-signature", "stationery", 600, 180, f"""
       <div class="row" style="position:absolute;inset:0;padding:24px 28px;gap:24px;align-items:center">
-        <div class="mark" style="height:64px">{c.mark(c.g['light']['btn'])}</div>
+        <div class="mark" style="height:64px">{c.mark_accented(c.g['light']['btn'], c.g['light']['bg'])}</div>
         <div style="border-left:2px solid var(--g-rule);padding-left:20px">
           <div class="disp" style="font-size:20px">{e(cp['person_name'])}</div>
           <div class="txt" style="font-size:13px;color:var(--g-muted)">{e(cp['person_role'])} · {e(c.name)}</div>
