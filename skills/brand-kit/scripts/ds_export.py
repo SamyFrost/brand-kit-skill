@@ -624,6 +624,9 @@ def components(d, pattern_uri):
     mark = d.svgs.get("small") or d.svgs.get("symbol") or d.svgs.get("monogram") or primary
     full = pl.colorize(primary, pal, "light") if primary else e(name)
     full_dark = pl.colorize(primary, pal, "dark") if primary else e(name)
+    dark_ver = pl.logo_version(d.dir, pl.ground_theme(pal, d.t, "dark")) if pal else None
+    if dark_ver:  # the drawn version for dark grounds beats a re-tint of the master
+        full_dark = pl.colorize(dark_ver, pal, "dark") if "data-color" in dark_ver else dark_ver
     mono = mono_svg(primary, pal) or e(name)
     mmark = mono_svg(mark, pal) or e(name[:1])
     acp = d.sys["applications"]["copy"]

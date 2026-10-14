@@ -117,6 +117,25 @@ class Ctx:
             return f'<span class="wm" style="color:{ink}">{e(self.name[:1])}</span>'
         return pl.colorize(src, self.pal, mono=ink)
 
+    def mark_accented(self, ink, ground):
+        """The small mark in `ink`, keeping its non-primary parts (an accent detail) in their palette colour when
+        that colour holds 3:1 on `ground`."""
+        src = self.svgs.get("small") or self.svgs.get("symbol") or self.svgs.get("monogram")
+        if not src:
+            return self.mark(ink)
+
+        def paint(m):
+            role = m.group(1)
+            hx = pl.role_hex(self.pal, role) if role not in ("primary", "text") else None
+            if not hx or colorlib.contrast_ratio(hx, ground) < 3:
+                hx = ink
+            return f'data-color="{hx}"'
+        import re as _re
+        src = _re.sub(r'data-color="([^"]+)"', paint, src)
+        svg = pl.colorize(src, self.pal, default=ink)
+        return _re.sub(r'<([a-zA-Z]+)\b([^>]*)data-color="(#[0-9a-fA-F]{6})"',
+                       lambda m: f'<{m.group(1)}{_re.sub(r" fill=\"[^\"]*\"", "", m.group(2))}fill="{m.group(3)}" data-color="{m.group(3)}"', svg)
+
 
 def _strip(svg):
     svg = re.sub(r"<\?xml[^>]*\?>|<!DOCTYPE[^>]*>|<!--.*?-->", "", svg, flags=re.S).strip()
@@ -221,7 +240,7 @@ def social_pages(c, P):
       </div>""", style=gvars(c.g["accent"])))
     out.append(page("avatar", "social", 400, 400, f"""
       <div style="position:absolute;inset:0;display:grid;place-items:center">
-        <div class="mark" style="height:200px">{c.mark(gp['ink'])}</div></div>""", style=gvars(gp)))
+        <div class="mark" style="height:200px">{c.mark_accented(gp['ink'], gp['bg'])}</div></div>""", style=gvars(gp)))
     out.append(page("banner", "social", 1500, 500, f"""
       <div class="pat" style="background-image:{P['primary']};inset:0 0 0 auto;width:560px"></div>
       <div class="pad" style="padding:0 96px;justify-content:center">
