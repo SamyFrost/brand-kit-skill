@@ -2195,6 +2195,10 @@ def _kept_variants(identity, palette, out_dir, set_dir):
         use = dk if mode == "dark" else parts
         on_hex = (modes.get(mode) or {}).get(on) if on else None
         paint, mono = fit(use, g, [on_hex] if on_hex else [])
+        if mono and dark_parts and use is not dark_parts:  # a dark ground in light mode: try the dark source colours
+            p2, m2 = fit(dark_parts, g, [on_hex] if on_hex else [])
+            if not m2:
+                use, paint, mono = dark_parts, p2, m2
         version(f"on-{mode}-{role}", use, view, paint, mode, ground=g, ground_role=role, one_color=mono)
     manifest["grounds"] = [{"mode": m, "ground": r, "on": "source colours if >= 3:1, else one colour"}
                            for m, r, _o in grounds]
@@ -2221,6 +2225,18 @@ def _kept_variants(identity, palette, out_dir, set_dir):
     version("app-icon-512", icon, (cx - side / 2, cy - side / 2, side, side), paint, "light", ground=tile,
             ground_role="primary", one_color=_m, png_px=512)
     manifest["app_icon"] = {"tile": "primary", "source": manifest["icon_from"]}
+    ap = os.path.join(set_dir, "logo", "app-icon.svg")
+    if os.path.isfile(ap):  # the set's own drawn app icon wins over the fitted kept logo, in its own colours
+        with open(ap, encoding="utf-8") as fh:
+            app_src = fh.read()
+        aparts, _s, _n = import_kept_svg(app_src)
+        bgm = re.search(r'<rect[^>]*fill="(#[0-9a-fA-F]{6})"', app_src)
+        _write(os.path.join(out_dir, "master-app-icon.svg"), app_src)
+        manifest["masters"]["app-icon"] = "master-app-icon.svg"
+        manifest["sources"]["app_icon"] = {"sha256": _sha(app_src)}
+        version("app-icon-512", aparts, (0.0, 0.0, 100.0, 100.0), {r: r[4:] for r, _i, _p in aparts}, "light",
+                ground=bgm.group(1).lower() if bgm else tile, ground_role="primary", png_px=512)
+        manifest["app_icon"] = {"source": "app-icon.svg"}
     _write(os.path.join(out_dir, "manifest.json"), json.dumps(manifest, indent=2, ensure_ascii=False) + "\n")
     return manifest
 

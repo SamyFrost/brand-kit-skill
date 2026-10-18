@@ -80,7 +80,26 @@ class Kit:
             return self.pal is not None
         return True
 
-    def mark(self, key="primary", mono=None, mode="light", height=None, attrs="", bg=None, probe=True, one=False):
+    def full_dark(self, bg):
+        """The primary logo's own full-colour dark version (e.g. a kept logo's logo-dark: white + accent parts) when
+        `bg` is a dark ground and every colour in it reads on that ground (>= 3:1), else None."""
+        if not bg or colorlib.relative_luminance(bg) > 0.18:
+            return None
+        man = pl.logo_manifest(self.info["dir"])
+        v = (man.get("versions") or {}).get("full-color-dark")
+        p = os.path.join(self.info["dir"], "logo", "build", (v or {}).get("svg") or "full-color-dark.svg")
+        if not v or not os.path.isfile(p):
+            return None
+        with open(p, encoding="utf-8") as fh:
+            svg = pl._crop_clear_space(fh.read(), man, bool(v.get("device")))
+        fills = set(re.findall(r'fill="(#[0-9a-fA-F]{6})"', svg))
+        if not fills or any(colorlib.contrast_ratio(f, bg) < 3 for f in fills):
+            return None
+        self.full_fills = fills  # the parts' own colours (colorize adds a root fill that is not a part)
+        return pl.colorize(svg, None)
+
+    def mark(self, key="primary", mono=None, mode="light", height=None, attrs="", bg=None, probe=True, one=False,
+             full=None):
         """A logo box. Full colour on `bg` uses logolib's on-* version for that ground when there is one; `mono`
         forces one colour (also on kept logos without palette roles). The probe measures every box
         (data-logo-ground) unless probe=False (the misuse examples)."""
@@ -89,7 +108,11 @@ class Kit:
         if not svg:
             return ""
         inner = None
-        if bg and not mono and svg == self.logos.get("primary"):
+        if full and svg == self.logos.get("primary"):  # dark ground: the logo in its full colours, not one colour
+            inner = self.full_dark(full)
+            if inner:
+                mono = None
+        if inner is None and bg and not mono and svg == self.logos.get("primary"):
             ver = pl.logo_version_for_bg(self.info["dir"], bg)
             if ver:
                 inner = pl.colorize(ver, None)
@@ -176,7 +199,7 @@ def page_cover(k):
     tr = k.tr
     d = pl.today_long(t=tr)
     sector = k.brand.get("sector") or ""
-    content = (f'<div class="hero">{k.mark("primary", mono=on, height=h, attrs=f" data-logo=cover data-min={k.min_px}")}'
+    content = (f'<div class="hero">{k.mark("primary", mono=on, height=h, attrs=f" data-logo=cover data-min={k.min_px}", full=k.t["primary"])}'
                f'</div>' if k.has("logo") else '<div class="hero"></div>')
     content += (f'<div class="bottom"><h1 class="disp" data-role="display">{e(tr("kit.guide"))}</h1>'
                 f'<div class="v">{e(tr("kit.version", v=VERSION))}<br>{e(d)}<br>{e(sector)}</div></div>')
@@ -356,6 +379,10 @@ def page_on_colour(k):
             cr = min([colorlib.contrast_ratio(x, bg) for x in hexes] or [21])
             word = tr("kit.onc.one") if one else tr("kit.onc.full")
             mk = k.mark("primary", height=h, bg=bg, one=one)
+        elif k.full_dark(bg):  # a dark ground the logo's own dark version reads on: full colour
+            cr = min(colorlib.contrast_ratio(x, bg) for x in k.full_fills)
+            word = tr("kit.onc.full")
+            mk = k.mark("primary", height=h, full=bg)
         else:
             mono, cr = _best_version(k, bg)
             word = tr("kit.onc.full") if mono is None else tr("kit.onc.one")
@@ -695,7 +722,7 @@ def page_applications(k):
             f'</div></div>')
     asp = k.aspect("primary")
     # business card ~274 x 177 px on the page: the logo fills <= 75% of the width, <= 30% of the height
-    front = k.mark("primary", mono=on, height=min(0.30 * 177, 0.75 * 274 / asp)) if k.has("logo") else ""
+    front = k.mark("primary", mono=on, height=min(0.30 * 177, 0.75 * 274 / asp), full=k.t["primary"]) if k.has("logo") else ""
     back_mark = k.mark("primary", height=min(16.0, 0.6 * 240 / asp)) if k.has("logo") else ""
     # the back carries no invented contact data: name and title are labelled samples, the address line is the
     # brand's own site when the brief has one, else a reserved example.com address
@@ -721,6 +748,8 @@ def page_applications(k):
     av_h = min(0.56 * 150, 0.66 * 150 / k.aspect(av))
     av_mark = k.mark(av, mono=on, height=av_h) if k.has("logo") else ""
     app = app_icon_svg(k.info["dir"])
+    if app:  # the drawn app icon already carries the brand's tile and colours: the avatar is that icon, round
+        av_mark = f'<div class="mk" style="height:150px;width:150px;border-radius:50%;overflow:hidden">{pl.colorize(app, None)}</div>'
     if app:  # the set's own app icon (app_icon_svg: its tile is part of the drawing) shown as built
         av_dark = f'<div class="mk" style="height:150px">{pl.colorize(app, None)}</div>'
         icon_cap = tr("kit.app.icon_own")
@@ -787,6 +816,8 @@ def page_dark(k):
     dk = k.pal["modes"].get("dark") or {}
     bg = dk.get("background", k.t["dark"])
     mono, _cr = _best_version(k, bg)
+    if mono and k.full_dark(bg):
+        mono = None  # the logo's own dark version carries its colours on this ground
     asp = k.aspect("primary")
     tr = k.tr
     copy = pl.brand_copy(k.brand, tr)
@@ -795,7 +826,7 @@ def page_dark(k):
             f'</p></div>'
             f'<div style="grid-column:5/13;background:{bg};box-shadow:inset 0 0 0 1px {dk.get("border", "#333")};'
             f'display:flex;flex-direction:column;justify-content:center;padding:56px;gap:28px;height:100%">'
-            f'{k.mark("primary", mono=mono, mode="dark", height=min(90.0, 600 / asp))}'
+            f'{k.mark("primary", mono=mono, mode="dark", height=min(90.0, 600 / asp), full=bg)}'
             f'<div lang="{e(copy["lang"])}" style="display:contents"><div class="disp" data-role="display" '
             f'style="font-size:48px;color:{dk.get("text", "#fff")}">'
             f'{e(k.brand.get("tagline") or k.brand["name"])}</div><p class="p" style="color:{dk.get("textMuted", "#ccc")};'
