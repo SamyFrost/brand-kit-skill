@@ -635,8 +635,8 @@ def components(d, pattern_uri):
     cta = acp.get("cta") or d.copy.get("cta") or ""
     cp = d.sys["applications"]["copy"]
     person, role = cp.get("person_name") or "Alex Sample", cp.get("person_role") or "Founder"
-    web = cp.get("website") or f"{slug(name).replace('-', '')}.com"
-    email = cp.get("email") or f"hello@{slug(name).replace('-', '')}.com"
+    web = cp.get("website") or ""                      # never invent contacts in the system
+    email = cp.get("email") or ""
     out = {}
 
     css = (".tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:16px}"
@@ -759,7 +759,8 @@ def components(d, pattern_uri):
            f'<div class="disp" style="font-size:20px">{e(person)}</div><div style="font-size:13px;opacity:.75">{e(role)} · {e(name)}</div>'
            f'<div style="font-size:13px;margin-top:8px">{e(email)}</div></div></div>')
     css = FRAME_CSS + ".lg svg{height:100%;width:auto;display:block}.lgw svg{width:100%;height:auto;display:block}"
-    out["Stationery"] = (marker("Print", 330, "business card front/back, email signature") + doc("Stationery", css,
+    if "stationery" in (d.sys["applications"].get("include") or []):
+      out["Stationery"] = (marker("Print", 330, "business card front/back, email signature") + doc("Stationery", css,
         '<div class="row"><div>' + scaled(1050, 600, 0.3, "", card_f) + '<div class="cap">Card front</div></div><div>'
         + scaled(1050, 600, 0.3, "", card_b) + '<div class="cap">Card back</div></div><div>'
         + scaled(600, 180, 0.5, "", sig) + '<div class="cap">Email signature</div></div></div>'),
