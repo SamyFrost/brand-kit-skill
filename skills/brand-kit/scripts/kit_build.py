@@ -699,11 +699,22 @@ def page_applications(k):
     back_mark = k.mark("primary", height=min(16.0, 0.6 * 240 / asp)) if k.has("logo") else ""
     # the back carries no invented contact data: name and title are labelled samples, the address line is the
     # brand's own site when the brief has one, else a reserved example.com address
-    contact = site_domain(k.info.get("work")) or tr("kit.app.email")
+    # real contact data from the set's system.json (applications.copy, sample false) replaces the samples
+    try:
+        with open(os.path.join(k.info["dir"], "system.json"), encoding="utf-8") as fh:
+            cp = ((json.load(fh) or {}).get("applications") or {}).get("copy") or {}
+    except (OSError, ValueError):
+        cp = {}
+    real = cp.get("sample") is False and bool(cp.get("person_name"))
+    lines = [x for x in (cp.get("email"), cp.get("phone"), cp.get("address")) if real and x]
+    contact = site_domain(k.info.get("work")) or (lines[0] if lines else tr("kit.app.email"))
+    extra = "".join(f'<span>{e(x)}</span>' for x in lines[1:])
     bc = (f'<div class="bc"><div><div class="card front">{front}</div><div class="cap">{e(tr("kit.app.bc_front"))}'
-          f'</div></div><div><div class="card back" data-sample><b>{e(tr("kit.app.name"))}</b>'
-          f'<span>{e(tr("kit.app.job"))}</span><span style="margin-top:6px">{e(contact)}</span>{back_mark}</div>'
-          f'<div class="cap">{e(tr("kit.app.bc_back"))} · {e(tr("kit.app.sample"))}</div></div></div>')
+          f'</div></div><div><div class="card back"{"" if real else " data-sample"}>'
+          f'<b>{e(cp["person_name"] if real else tr("kit.app.name"))}</b>'
+          f'<span>{e((cp.get("person_role") or "") if real else tr("kit.app.job"))}</span>'
+          f'<span style="margin-top:6px">{e(contact)}</span>{extra}{back_mark}</div>'
+          f'<div class="cap">{e(tr("kit.app.bc_back"))}{"" if real else " · " + e(tr("kit.app.sample"))}</div></div></div>')
     # avatar and app icon are 150 px: the full symbol (the small cut is drawn for 16-48 px); the mark fills
     # <= 56% of the height and <= 66% of the width (a wordmark gets smaller)
     av = icon_key(k.logos, 150)
