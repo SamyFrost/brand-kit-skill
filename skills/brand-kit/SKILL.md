@@ -20,6 +20,7 @@ Ask once (skip what the user, their files or site already answered); write it in
 - Site URL or files; languages the brand writes in; kit language (`--doc-lang`, `es` and `en` ship).
 - Sector, audience, three attributes and two "never" words, 3-5 competitors (only if unknown).
 - Where the brand lives: social networks, video, print, packaging, merch, signage (sets `applications.include`).
+- Optional, offer once: sonic identity (sonic logo, music beds, SFX). Never required; `references/sonic.md`.
 With a site run `site extract` first. Details: `references/discovery-brief.md`.
 
 ## 2. Creative framework (before any shape or colour)
@@ -86,6 +87,7 @@ what is sample data, and what remains to write.
 | `discovery-brief.md` | intake is unclear |
 | `kit.md` | after the pick |
 | `motion.md` · `imagery-ai-prompts.md` · `applications.md` | filling system.json, rendering apps |
+| `sonic.md` | the user opted into sonic identity |
 | `design-system-artifact.md` | exporting and publishing the Design System |
 | `site-preview.md` · `critique.md` | a live site · critiquing an existing identity |
 | `accessibility.md` · `reproduction.md` · `tokens-export.md` | contrast · print · developer hand-off |

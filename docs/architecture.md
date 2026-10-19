@@ -471,6 +471,7 @@ the tiles are not probed for logo contrast (they are wrong on purpose).
 | `ai-defaults.md` | 3 KB | §5 |
 | `color.md` | 5 KB | brand colour strategy, architecture, pairing |
 | `kit.md` | 5 KB | kit anatomy, real guideline examples and inspiration sources as links |
+| `sonic.md` | 4 KB | optional sonic identity: sonic logo, music beds, SFX via ElevenLabs API or Suno (manual) |
 | `accessibility.md`, `reproduction.md`, `critique.md`, `site-preview.md`, `tokens-export.md`, `discovery-brief.md` | 4 KB each | trimmed; read only when needed |
 
 ## 9. Budget

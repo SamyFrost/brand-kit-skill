@@ -22,7 +22,7 @@ Tie each to the mechanism. Examples: "Things arrive the way a spoke turns: one d
 
 ## Logo sting (`motion.logo_sting`)
 One sentence each for: what moves (symbol, wordmark, a detail), the path (rotate, draw, slide, reveal), timing
-(`duration-sting`, with `ease-expressive`), the end frame (the static logo, held ≥ 1 s), sound if any. The
+(`duration-sting`, with `ease-expressive`), the end frame (the static logo, held ≥ 1 s), sound if any (optional sonic logo: `sonic.md`). The
 `LogoSting` component and `applications/<SET>/logo-sting.html` implement a default (mark scales/rotates in,
 wordmark wipes in); edit `applications.py → sting_html` for a different idea. Record at 1920x1080 (screen capture
 or Remotion with the same timings) for video.
