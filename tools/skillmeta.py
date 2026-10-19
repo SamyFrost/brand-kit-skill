@@ -22,7 +22,7 @@ REFERENCE_CAPS = {
     "tokens-export.md": 4, "discovery-brief.md": 4,
     # brand-kit cards
     "creative-framework.md": 5, "motion.md": 4, "imagery-ai-prompts.md": 5, "applications.md": 4,
-    "design-system-artifact.md": 5,
+    "design-system-artifact.md": 5, "sonic.md": 4,
 }
 
 
